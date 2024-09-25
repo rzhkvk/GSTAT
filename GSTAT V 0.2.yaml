@@ -1,0 +1,298 @@
+openapi: '3.0.2'
+info: 
+  title: 'GSTAT API'
+  description: 'Get and collect information about games and achievemetns'
+  version: '0.1'
+  contact:
+    name: 'GSTAT creator'
+    email: 'kn.ryzhkov@gmail.com'
+servers:
+- url: 'https://api.gstat.com/data/0.1/'
+paths:
+  /registration:
+    post:
+      tags:
+      - Registration
+      summary: Register a new User
+      description: Lets a user post a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                    - username
+              properties:
+                    id:
+                      type: integer
+                    nickname:
+                      type: string
+                    password:
+                      type: string
+                    email:
+                      type: string
+      responses:
+        '200':
+          description: Successfuly created a new User
+        '401':
+          description: Invalid email or password
+        '500':
+          description: Server error
+
+  /authorization:
+    post:
+      summary: Log in a user
+      tags:
+      - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                    - username
+              properties:
+                    password:
+                      type: string
+                    email:
+                      type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid email or password
+        '500':
+          description: Server error
+
+  /games:
+    get:
+      tags:
+      - Games
+      summary: 'Call current games list'
+      description: 'Access current games list what was taken from platforms sites'
+      operationId: GamesList
+      parameters:
+        - $ref: '#/components/parameters/Gamesid'
+        - $ref: '#/components/parameters/Gamesname'
+        - $ref: '#/components/parameters/Gamesrating'
+        - $ref: '#/components/parameters/Gamesplatform_id'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games200'
+                
+  /games/{Game_id}:
+    get:
+      tags:
+      - Games
+      summary: 'Call game by id'
+      description: 'Access current games list what was taken from platforms sites'
+      operationId: Games
+      parameters:
+        - $ref: '#/components/parameters/Game_id'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Games200'
+                
+  /users:
+    get:
+      tags:
+      - Users
+      summary: 'Call current users list'
+      operationId: UsersList
+      parameters:
+        - $ref: '#/components/parameters/Usersid'
+        - $ref: '#/components/parameters/Usersemail'
+        - $ref: '#/components/parameters/Userspassword'
+        - $ref: '#/components/parameters/Usersnickname'
+        
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users200'
+          
+  /users/{User_id}:
+    get:
+      tags:
+      - Users
+      summary: 'Call User by id'
+      operationId: User 
+      parameters:
+        - $ref: '#/components/parameters/User_id'
+        
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users200'
+                
+    put:
+      tags:
+        - Users
+      summary: Update user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object 
+      parameters:
+        - $ref: '#/components/parameters/User_id'
+        - $ref: '#/components/parameters/Usersemail'
+        - $ref: '#/components/parameters/Userspassword'
+        - $ref: '#/components/parameters/Usersnickname'
+      responses:
+        '200':
+          description: User succesfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users200'
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      parameters:
+        - $ref: '#/components/parameters/User_id'
+      responses:
+        '200':
+          description: Success
+          
+components:
+
+  parameters:
+    Gamesid:
+      name: Gamesid
+      in: query
+      description: 'Game ID in games list'
+      schema:
+        type: integer
+    Game_id:
+      name: Game_id
+      in: path
+      description: 'Game ID in games list'
+      required: true
+      schema:
+        type: integer
+    Gamesname:          
+      name: name
+      in: query
+      description: 'Game name was taken by developers'
+      schema:
+        type: string
+    Gamesrating:     
+      name: rating
+      in: query
+      description: 'Average players rating'
+      schema:
+        type: integer
+    Gamesplatform_id:          
+      name: platform_id
+      in: query
+      description: 'Platform ID is belonging to a specific platform in the database Platforms'
+      schema:
+        type: integer
+        
+    User_id:
+      name: User_id
+      in: path
+      description: 'User ID in users list'
+      required: true
+      schema:
+        type: integer
+    Usersid:
+      name: id
+      in: query
+      description: 'User ID in users list'
+      schema:
+        type: integer
+    Usersnickname:          
+      name: nickname
+      in: query
+      description: 'User nickname'
+      schema:
+        type: string
+    Usersemail:     
+      name: email
+      in: query
+      description: 'User email for authorization'
+      schema:
+        type: string
+    Userspassword:          
+      name: password
+      in: query
+      description: 'User password for authorization'
+      schema:
+        type: string
+        
+  schemas:
+    Games200:
+      title: Successful response for games
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Gamesid'
+        name: 
+          $ref: '#/components/schemas/Gamesname'
+        rating:
+          $ref: '#/components/schemas/Gamesrating'
+        platform_id:
+          $ref: '#/components/schemas/Gamesplatform_id'
+    Gamesid:
+      title: id
+      type: integer
+      example: 1
+    Gamesname:
+      title: name
+      type: string
+      example: Red Dead Redemption 2
+    Gamesrating:
+      title: rating
+      type: integer
+      example: 9.8
+    Gamesplatform_id:
+      title: platform_id
+      type: integer
+      example: 1
+      
+    Users200:
+      title: Successful response for users
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Usersid'
+        name: 
+          $ref: '#/components/schemas/Usersnickname'
+        password:
+          $ref: '#/components/schemas/Userspassword'
+        email:
+          $ref: '#/components/schemas/Usersemail'
+    Usersid:
+      title: id
+      type: integer
+      example: 1
+    Usersnickname:
+      title: name
+      type: string
+      example: Player One
+    Userspassword:
+      title: password
+      type: string
+      example: 123abc
+    Usersemail:
+      title: email
+      type: string
+      example: playerone@mail.com

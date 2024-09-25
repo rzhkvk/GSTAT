@@ -1,0 +1,124 @@
+openapi: '3.0.2'
+info: 
+  title: 'PlayStation Games and Trophies API'
+  description: 'Get information about games and achievemetns for playsers'
+  version: '0.1'
+  contact:
+    name: 'GSTAT creator'
+    email: 'kn.ryzhkov@gmail.com'
+servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/KNRYZHKOV/PS_Games_Trophies_API/0.1
+- url: 'https://m.np.playstation.com/api/trophy/'
+paths:
+  /v1/users/{accountId}/trophyTitles:
+    get:
+      tags: 
+      - Games and Trophies
+      summary: 'Get Games and Trophies info'
+      description: 'Get information about Games and Trophies for current player'
+      operationId: GamesList
+      parameters: 
+        - $ref: '#/components/parameters/accountId'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+
+components:
+  parameters:
+    accountId:
+      name: accountId
+      in: path
+      required: true
+      description: 'The account whos trophies and games list is being accessed'
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: 'Limit the number of titles returned'
+      schema:
+        type: number
+    offset:
+      name: offset
+      in: query
+      description: 'Returns title data from this result onwards'
+      schema:
+        type: number
+        
+  schemas:
+    200:
+      title: Successful Response
+      type: object
+      properties:
+        trophyTitles:
+          $ref: '#/components/schemas/trophyTitles'
+        totalItemCount:
+          title: totalItemCount
+          type: number
+          example: 300
+        nextOffset:
+          title: nextOffset
+          type: number
+          example: 20
+        previousOffset:
+          title: previousOffset
+          type: number
+          example: 99
+      
+    trophyTitles:
+      title: trophyTitles
+      type: object
+      properties:
+        npServiceName:
+          title: npServiceName
+          type: string
+          example: trophy2
+        npCommunicationId: 
+          title: npCommunicationId
+          type: string
+          example: NPWR21575_00
+        trophySetVersion:
+          title: trophySetVersion
+          type: string
+          example: '01.07'
+        trophyTitleName: 
+          title: trophyTitleName
+          type: string
+          example: RESIDENT EVIL 5
+        trophyTitleDetail: 
+          title: trophyTitleDetail
+          type: string
+          example: RESIDENT EVIL 5 Trophy Set
+        trophyTitleIconUrl:
+          title: trophyTitleIconUrl
+          type: string
+          example: https://psnobj.prod.dl.playstation.net/psnobj/NPWR21575_00/45976ee9-344e-423d-940d-5e42fc82e5b8.png
+        trophyTitlePlatform:
+          title: trophyTitlePlatform
+          type: string
+          example: PS5
+        hasTrophyGroups: 
+          title: hasTrophyGroups
+          type: boolean
+          example: true
+        progress:
+          title: progress
+          type: number
+          example: 98
+        hiddenFlag: 
+          title: hiddenFlag
+          type: boolean
+          example: false
+        lastUpdatedDateTime: 
+          title: lastUpdatedDateTime
+          type: string
+          example: '2021-03-17T21:58:18Z'
+          
